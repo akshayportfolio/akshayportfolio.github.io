@@ -1,0 +1,30 @@
+# CI/CD: Push to dev → GitHub Pages auto-deploys
+# This workflow runs on every push to dev. GitHub Pages is configured to
+# serve from the dev branch, so the site updates automatically after each push.
+
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [dev]
+  workflow_dispatch:
+
+jobs:
+  validate-and-deploy:
+    name: Validate & trigger deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate site files
+        run: |
+          test -f index.html || (echo "Missing index.html" && exit 1)
+          test -f style.css || (echo "Missing style.css" && exit 1)
+          echo "✓ All required files present."
+
+      - name: Deploy info
+        run: |
+          echo "Pushed to branch: dev"
+          echo "GitHub Pages will build and deploy from this branch."
+          echo "Live site: https://akshayportfolio.github.io/"
